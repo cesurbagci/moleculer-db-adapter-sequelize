@@ -79,6 +79,14 @@ class SequelizeDbAdapter {
 				noSync = !!this.opts[3].noSync;
 			}
 
+			if (modelDefinitionOrInstance.options.schema, modelDefinitionOrInstance.options.schema.length > 0) {
+				this.db.showAllSchemas({ logging: false }).then(async (data) => {
+					if (!data.includes(modelDefinitionOrInstance.options.schema)) {
+						await this.db.createSchema(modelDefinitionOrInstance.options.schema);
+					}
+				});
+			}
+
 			let modelReadyPromise;
 			let isModelInstance = modelDefinitionOrInstance
 				&& (Object.prototype.hasOwnProperty.call(modelDefinitionOrInstance, "attributes")
@@ -121,7 +129,7 @@ class SequelizeDbAdapter {
 					}
 				}
 
-				modelReadyPromise = noSync ? Promise.resolve(this.db) : this.db.sync();
+				modelReadyPromise = noSync ? Promise.resolve(this.db) : this.db.sync({ force: this.service.schema.eraseDatabaseOnSync || false});
 
 			}
 
