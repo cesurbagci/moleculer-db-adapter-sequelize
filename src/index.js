@@ -194,11 +194,11 @@ class SequelizeDbAdapter {
 	*/
 	findAll(options, pageOptions = { offset: 0, limit: -1 }) {
 
-		if (!_.isNumber(options.offset) || options.offset <= 0) {
+		if (_.isNumber(pageOptions.offset) && pageOptions.offset > 0) {
 			options.offset = pageOptions.offset || 0;
 		}
 
-		if (!_.isNumber(options.limit) && options.limit > 0) {
+		if (_.isNumber(pageOptions.limit) && pageOptions.limit > 0) {
 			options.limit = pageOptions.limit || 10;
 		}
 
